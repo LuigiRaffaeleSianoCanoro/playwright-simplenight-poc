@@ -27,10 +27,11 @@ test('SC001 - Booking flow - Hotels in Miami', async ({ page }) => {
         hotelSearchData.children);
     await page.waitForTimeout(5000); // wait for navigation to complete
     await expect(page.url()).toContain('/search/hotels');
-
-    // Select the MAP layout option using the enum
     await hotelResultsPage.selectResultsLayout(ResultsLayoutOption.MAP);
-
     await hotelResultsPage.setPriceRange(100, 1000);
     await hotelResultsPage.setGuestScore(GuestScore.VERY_GOOD);
+    await hotelResultsPage.zoomInMap(8);
+    await hotelResultsPage.selectHotelOnMap();
+    await hotelResultsPage.verifyHotelCardGuestScore(GuestScore.VERY_GOOD);
+    await hotelResultsPage.verifyHotelCardPrice(100, 1000);
 });

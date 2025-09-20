@@ -6,10 +6,14 @@ export class HotelResultsPage {
   readonly resultsLayoutTrigger: Locator;
   readonly mapLayoutOption: (layoutOption: string) => Locator;
   readonly selectedLayoutOption: Locator;
-
-  // Sliders
   readonly minPriceSlider: Locator;
   readonly maxPriceSlider: Locator;
+  readonly mapContainer: Locator;
+  readonly hotelMarkers: Locator;
+  readonly hotelCard: Locator;
+  readonly hotelCardTotalLabel: Locator;
+  readonly hotelCardLabelTotalPriceSpan: Locator;
+  readonly hoetlCardGuestScoreLabel: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -21,6 +25,12 @@ export class HotelResultsPage {
 
     this.minPriceSlider = page.locator('[role="slider"]').first();
     this.maxPriceSlider = page.locator('[role="slider"]').nth(1);
+    this.mapContainer = page.locator('[data-testid="map"]');
+    this.hotelMarkers = page.locator('gmp-advanced-marker');
+    this.hotelCard = page.locator('article');
+    this.hotelCardTotalLabel = this.hotelCard.locator('span', { hasText: 'Total' });
+    this.hotelCardLabelTotalPriceSpan = this.hotelCardTotalLabel.locator('xpath=following-sibling::span');
+    this.hoetlCardGuestScoreLabel = this.hotelCard.locator('div[class*="[grid-area:rating-label]"]');
   }
 
   /**
@@ -98,5 +108,46 @@ async setGuestScore(score: GuestScore) {
   await checkbox.check();
   await expect(checkbox).toBeChecked();
 }
+
+/**
+   * Zooms in on the map by sending '+' key presses.
+   *
+   * @param times Number of zoom-in key presses. Default is 1.
+   */
+  async zoomInMap(times: number = 1) {
+    // Click map to focus keyboard input
+    await this.mapContainer.click({ position: { x: 100, y: 100 } });
+    for (let i = 0; i < times; i++) {
+      await this.page.keyboard.press('+');
+      await this.page.waitForTimeout(300); // optional wait for map to render
+    }
+  }
+
+  /**
+   * Selects a hotel marker on the map.
+   *
+   * @param hotelName Optional: hotel name to select. If omitted, selects the first hotel.
+   */
+  async selectHotelOnMap(hotelName?: string) {
+    if (hotelName) {
+      await this.page.getByRole('button', { name: hotelName }).click();
+    } else {
+      await this.hotelMarkers.first().click();
+    }
+  }
+
+  async verifyHotelCardPrice(minPrice: number, maxPrice: number){
+    const totalPriceText = await this.hotelCardLabelTotalPriceSpan.textContent();
+    if (!totalPriceText) throw new Error('Total price not found');
+    const total = Number(totalPriceText.replace(/[^0-9]/g, ''));
+    if (total < minPrice || total > maxPrice) {
+      throw new Error(`Hotel total price ${total} is outside filter range ${minPrice}-${maxPrice}`);
+    }    
+  }
+
+  async verifyHotelCardGuestScore(expectedScore: GuestScore){
+    const mainText = expectedScore.split('(')[0].trim();
+    await expect(this.hoetlCardGuestScoreLabel).toContainText(mainText);
+  }
 
 }
