@@ -34,7 +34,7 @@ A focused test automation framework built with Playwright and TypeScript to auto
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/LuigiRaffaeleSianoCanoro/playwright-simplenight-poc.git
    cd playwright-simplenight-poc
    ```
 
