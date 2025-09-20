@@ -21,6 +21,8 @@ export class SearchBarPage {
   readonly  doneDatesButton: Locator;
   readonly  incrementAdultsButton: Locator;
   readonly  incrementChildrenButton: Locator;
+  readonly  hotelInputAdultsCounter: Locator;
+  readonly  hotelInputChildrenCounter: Locator;
 
     constructor(page: Page) {
         this.page = page;
@@ -47,6 +49,9 @@ export class SearchBarPage {
         this.doneDatesButton = page.locator('[data-testid="category(static_hotels)_search-form_dates_apply-button"]');
         this.incrementAdultsButton = page.getByLabel('Add Adult');
         this.incrementChildrenButton = page.getByLabel('Add Child');
+        this.hotelInputAdultsCounter = this.incrementAdultsButton.locator('.. >> p');
+        this.hotelInputChildrenCounter = this.incrementChildrenButton.locator('.. >> p');
+
     }
 
     async selectHotelCategory() {
@@ -123,6 +128,8 @@ export class SearchBarPage {
         for (let j = 0; j < children; j++) {
             await this.incrementChildrenButton.click();
         }
+        await expect(this.hotelInputAdultsCounter).toHaveText(`${adults}`);
+        await expect(this.hotelInputChildrenCounter).toHaveText(`${children}`);
     }
 
     async searchHotels(location: string, checkIn: string, checkout: string, adults: number, children: number) {
