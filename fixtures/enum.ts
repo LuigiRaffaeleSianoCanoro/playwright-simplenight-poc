@@ -11,3 +11,7 @@ export enum GuestScore {
   AVERAGE = 'Average (5-)',
   ALL = 'All',
 }
+
+export enum UrlParam{
+  SEARCHPAGE = '/search/hotels'
+}

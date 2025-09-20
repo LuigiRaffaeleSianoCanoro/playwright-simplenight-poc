@@ -4,9 +4,15 @@
   "description": "Create a test automation framework using Playwright and TypeScript to automate the booking process for the Simplenight website. The framework should allow automation of the booking process for any category.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "test:install": "playwright install",
+    "test:install-deps": "playwright install-deps"
   },
-  "keywords": [],
+  "keywords": ["playwright", "test-automation", "typescript", "e2e-testing"],
   "author": "",
   "license": "ISC",
   "devDependencies": {
