@@ -1,5 +1,7 @@
 export const hotelSearchData = {
-  location: 'Miami',
-  dates: 'May 20 - May 22',
-  travelers: '1 Room, 2 Guests',
+    location: 'Miami',
+    checkout: '2026-05-22',
+    checkin: '2026-05-20',
+    adults: 1,
+    children: 1
 };
