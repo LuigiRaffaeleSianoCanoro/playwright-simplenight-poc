@@ -12,7 +12,7 @@ export abstract class BasePage {
    */
   async waitForPageLoad() {
     // Wait for the page to be fully loaded
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   /**

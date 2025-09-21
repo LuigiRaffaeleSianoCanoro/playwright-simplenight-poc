@@ -10,7 +10,7 @@ export class TestHelpers {
    * @param timeout - Timeout in milliseconds
    */
   static async waitForPageLoad(page: Page, timeout: number = 30000) {
-    await page.waitForLoadState('networkidle', { timeout });
+    await page.waitForLoadState('domcontentloaded', { timeout });
   }
 
   /**
