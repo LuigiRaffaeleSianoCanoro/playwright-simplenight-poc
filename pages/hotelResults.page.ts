@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { GuestScore, ResultsLayoutOption } from '../fixtures/enum';
+import { GuestScore, ResultsLayoutOption, UrlParam } from '../fixtures/enum';
 import { BasePage } from './base.page';
 
 export class HotelResultsPage extends BasePage {
@@ -16,15 +16,15 @@ export class HotelResultsPage extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    this.resultsLayoutTrigger = page.locator('[data-testid="category(static_hotels)_search-results_layout-select_trigger"]');
+    this.resultsLayoutTrigger = page.getByTestId('category(static_hotels)_search-results_layout-select_trigger');
     this.mapLayoutOption = (layoutOption: string) =>
-      this.page.locator(`[data-testid="category(static_hotels)_search-results_layout-select_option(${layoutOption})"]`);
+      this.page.getByTestId(`category(static_hotels)_search-results_layout-select_option(${layoutOption})`);
 
-    this.minPriceSlider = page.locator('[role="slider"]').first();
-    this.maxPriceSlider = page.locator('[role="slider"]').nth(1);
-    this.mapContainer = page.locator('[data-testid="map"]');
+    this.minPriceSlider = page.getByRole('slider').first();
+    this.maxPriceSlider = page.getByRole('slider').nth(1);
+    this.mapContainer = page.getByTestId('map');
     this.hotelMarkers = page.locator('gmp-advanced-marker');
-    this.hotelCard = page.locator('article');
+    this.hotelCard = page.getByRole('article');
     this.hotelCardLabelTotalPriceSpan = this.hotelCard.locator('span', { hasText: 'Total' }).locator('xpath=following-sibling::span');
     this.hotelCardGuestScoreLabel = this.hotelCard.locator('div[class*="[grid-area:rating-label]"]');
   }
@@ -145,25 +145,11 @@ async setGuestScore(score: GuestScore) {
   }
 
   /**
-   * Wait for hotel results to load
+   * Wait for hotel results page to load
    */
-  async waitForResultsToLoad() {
-    await this.hotelCard.first().waitFor({ state: 'visible', timeout: 10000 });
+  async waitForResultsPageToLoad() {
+      await this.page.waitForURL('**/search/hotels**');
+      await expect(this.page.url()).toContain(UrlParam.SEARCHPAGE);
   }
 
-  /**
-   * Get the number of hotel cards displayed
-   */
-  async getHotelCount(): Promise<number> {
-    return await this.hotelCard.count();
-  }
-
-
-  /**
-   * Verify that results are displayed
-   */
-  async verifyResultsDisplayed() {
-    await expect(this.hotelCard.first()).toBeVisible();
-    await expect(this.resultsLayoutTrigger).toBeVisible();
-  }
 }

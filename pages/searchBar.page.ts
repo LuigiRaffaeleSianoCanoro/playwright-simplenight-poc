@@ -3,15 +3,15 @@ import { BasePage } from './base.page';
 
 export class SearchBarPage extends BasePage {
   readonly categories = {
-    hotel: this.page.locator('[data-testid="category-search-bar-tab(static_hotels)"]'),
+    hotel: this.page.getByTestId('category-search-bar-tab(static_hotels)'),
   };
 
   readonly hotelForm = {
-    locationTrigger: this.page.locator('[data-testid="category(static_hotels)_search-form_location_trigger"]'),
-    locationInput: this.page.locator('[data-testid="category(static_hotels)_search-form_location_input"]'),
-    dateTrigger: this.page.locator('[data-testid="category(static_hotels)_search-form_dates_trigger"]'),
-    travelersTrigger: this.page.locator('[data-testid="category(static_hotels)_search-form_guests_trigger"]'),
-    searchButton: this.page.locator('[data-testid="category(static_hotels)_search-form_search-button"]'),
+    locationTrigger: this.page.getByTestId('category(static_hotels)_search-form_location_trigger'),
+    locationInput: this.page.getByTestId('category(static_hotels)_search-form_location_input'),
+    dateTrigger: this.page.getByTestId('category(static_hotels)_search-form_dates_trigger'),
+    travelersTrigger: this.page.getByTestId('category(static_hotels)_search-form_guests_trigger'),
+    searchButton: this.page.getByTestId('category(static_hotels)_search-form_search-button'),
   };
 
   readonly locationOptions: Locator;
@@ -26,14 +26,14 @@ export class SearchBarPage extends BasePage {
   constructor(page: Page) {
     super(page);
     
-    this.locationOptions = page.locator('div[role="option"]');
+    this.locationOptions = page.getByRole('option');
     this.hotelDatePick = (year: number, month: number, day: number) => {
-      return this.page.locator(
-        `[data-testid="category(static_hotels)_search-form_dates_calendar_day(${year}-${month}-${day})"]`
+      return this.page.getByTestId(
+        `category(static_hotels)_search-form_dates_calendar_day(${year}-${month}-${day})`
       );
     };
     this.nextMonthButton = page.locator('button[data-direction="next"]');
-    this.doneDatesButton = page.locator('[data-testid="category(static_hotels)_search-form_dates_apply-button"]');
+    this.doneDatesButton = page.getByTestId('category(static_hotels)_search-form_dates_apply-button');
     this.incrementAdultsButton = page.getByLabel('Add Adult');
     this.incrementChildrenButton = page.getByLabel('Add Child');
     this.hotelInputAdultsCounter = this.incrementAdultsButton.locator('.. >> p');
@@ -63,15 +63,20 @@ export class SearchBarPage extends BasePage {
    * Select hotel check-in and check-out dates
    * @param checkIn - Check-in date in YYYY-MM-DD format
    * @param checkOut - Check-out date in YYYY-MM-DD format
+   * @param dateValue - Expected date in the format:
+*   "Check-in MonthName Day - Check-out MonthName Day"
+*   (e.g., "May 20 - May 22").
    */
-  async selectHotelDates(checkIn: string, checkOut: string) {
+  async selectHotelDates(checkIn: string, checkOut: string, dateValue: string) {
     await this.hotelForm.dateTrigger.click();
     
     await this.selectDate(checkIn);
+    await this.selectDate(checkIn);
+
     await this.selectDate(checkOut);
     
     await this.doneDatesButton.click();
-    await this.verifyDatesSelected(checkIn, checkOut);
+    await this.verifyDatesSelected(dateValue);
   }
 
   /**
@@ -99,10 +104,12 @@ export class SearchBarPage extends BasePage {
 
   /**
    * Verify that the selected dates are displayed correctly
-   * @param checkIn - Expected check-in date
-   * @param checkOut - Expected check-out date
+   * @param dateValue - Expected date in the format:
+*   "Check-in MonthName Day - Check-out MonthName Day"
+*   (e.g., "May 20 - May 22").
    */
-  private async verifyDatesSelected(checkIn: string, checkOut: string) {
+  private async verifyDatesSelected(dateValue: string) {
+    await expect(this.hotelForm.dateTrigger).toHaveValue(dateValue);
   }
 
   /**
@@ -133,9 +140,9 @@ export class SearchBarPage extends BasePage {
    * @param adults - Number of adults
    * @param children - Number of children
    */
-  async searchHotels(location: string, checkIn: string, checkOut: string, adults: number, children: number) {
+  async searchHotels(location: string, checkIn: string, checkOut: string,dateValue: string, adults: number, children: number) {
     await this.selectHotelLocation(location);
-    await this.selectHotelDates(checkIn, checkOut);
+    await this.selectHotelDates(checkIn, checkOut, dateValue);
     await this.selectHotelTravelers(adults, children);
     await this.hotelForm.searchButton.click();
   }
