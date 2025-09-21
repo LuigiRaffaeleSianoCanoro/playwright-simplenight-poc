@@ -30,21 +30,16 @@ export type ResultsLayout = 'grid' | 'list' | 'map';
 
 // Test data interfaces
 export interface BaseSearchData {
-  location: string;
-  checkin: string;
-  checkout: string;
-  adults: number;
-  children: number;
+
 }
 
 export interface HotelSearchData extends BaseSearchData {
-  // Hotel-specific search data can be extended here
-}
-
-export interface FlightSearchData extends BaseSearchData {
-  departure: string;
-  arrival: string;
-  // Flight-specific search data
+  location: string;
+  checkin: string;
+  checkout: string;
+  dateValue: string;
+  adults: number;
+  children: number;
 }
 
 export interface PriceRange {

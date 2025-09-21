@@ -3,6 +3,7 @@ export interface HotelSearchData {
   location: string;
   checkin: string;
   checkout: string;
+  dateValue: string;
   adults: number;
   children: number;
 }
@@ -23,6 +24,7 @@ export const hotelSearchData: HotelSearchData = {
   location: 'Miami',
   checkin: '2026-05-20',
   checkout: '2026-05-22',
+  dateValue: 'May 20 - May 22',
   adults: 1,
   children: 1
 };
