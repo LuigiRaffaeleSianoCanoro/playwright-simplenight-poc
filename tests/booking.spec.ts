@@ -18,14 +18,7 @@ test('SC001 - Complete hotel booking flow for Miami with all requirements', asyn
   });
 
   await test.step('Perform search with required parameters', async () => {
-    await searchBar.searchHotels(
-      hotelSearchData.location,
-      hotelSearchData.checkin,
-      hotelSearchData.checkout,
-      hotelSearchData.dateValue,
-      hotelSearchData.adults,
-      hotelSearchData.children
-    );
+    await searchBar.searchHotels(hotelSearchData);
   });
 
   await test.step('Wait for results page to load and verify URL', async () => {

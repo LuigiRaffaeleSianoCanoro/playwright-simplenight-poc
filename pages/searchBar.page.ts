@@ -1,5 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './base.page';
+import { HotelResultsPage } from './hotelResults.page';
+import { HotelSearchData } from '@/types';
 
 export class SearchBarPage extends BasePage {
   readonly categories = {
@@ -137,13 +139,14 @@ export class SearchBarPage extends BasePage {
    * @param location - Hotel location
    * @param checkIn - Check-in date in YYYY-MM-DD format
    * @param checkOut - Check-out date in YYYY-MM-DD format
+   * @param dateValue - dateValue in the format "MonthName Day - MonthName Day"
    * @param adults - Number of adults
    * @param children - Number of children
    */
-  async searchHotels(location: string, checkIn: string, checkOut: string,dateValue: string, adults: number, children: number) {
-    await this.selectHotelLocation(location);
-    await this.selectHotelDates(checkIn, checkOut, dateValue);
-    await this.selectHotelTravelers(adults, children);
+  async searchHotels(hotelSearchData: HotelSearchData) {
+    await this.selectHotelLocation(hotelSearchData.location);
+    await this.selectHotelDates(hotelSearchData.checkin, hotelSearchData.checkout, hotelSearchData.dateValue);
+    await this.selectHotelTravelers(hotelSearchData.adults, hotelSearchData.children);
     await this.hotelForm.searchButton.click();
   }
 }
