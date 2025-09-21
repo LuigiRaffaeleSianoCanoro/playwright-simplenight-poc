@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { getHeadedConfig } from './config/headed.config';
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -11,8 +12,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Use configuration-based worker count */
+  workers: getHeadedConfig().workers,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],
@@ -38,15 +39,26 @@ export default defineConfig({
     
     /* Global timeout for navigation */
     navigationTimeout: 30000,
+    
+    /* Use configuration-based headless setting */
+    headless: getHeadedConfig().headless,
+    
+    /* Set viewport for consistent testing */
+    viewport: { width: 1280, height: 720 },
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        // Chrome-specific settings for better reliability
+        launchOptions: getHeadedConfig().launchOptions
+      },
     },
 
+    /* Additional browsers for cross-browser testing (optional) */
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
@@ -57,7 +69,7 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
 
-    /* Test against mobile viewports. */
+    /* Mobile testing (optional) */
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
