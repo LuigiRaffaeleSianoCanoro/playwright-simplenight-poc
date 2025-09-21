@@ -15,16 +15,6 @@ export abstract class BasePage {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
-  /**
-   * Take a screenshot for debugging purposes
-   * @param name - Name for the screenshot file
-   */
-  async takeScreenshot(name: string) {
-    await this.page.screenshot({ 
-      path: `test-results/${name}-${Date.now()}.png`,
-      fullPage: true 
-    });
-  }
 
   /**
    * Wait for a specific element to be visible
